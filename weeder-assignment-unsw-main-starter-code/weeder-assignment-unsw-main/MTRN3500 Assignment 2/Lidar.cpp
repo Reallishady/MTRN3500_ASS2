@@ -1,6 +1,7 @@
 #include "Lidar.h"
-static const char* STUDENT_ID = "z5492432";
-const char* LIDAR_ADDRESS = "192.168.1.200";
+static const char* STUDENT_ID = "5492432";
+//const char* LIDAR_ADDRESS = "192.168.1.200";
+const char* LIDAR_ADDRESS = "127.0.0.1";
 static bool countWarned = false;
 LiDAR::LiDAR(SM_ThreadManagement^ SM_TM, SM_LiDAR^ SM_lidar)
 {
@@ -97,37 +98,40 @@ void LiDAR::threadFunction() {
 }
 error_state LiDAR::connect(String^ hostName, int portNumber)
 {
-	Client = gcnew TcpClient(hostName, portNumber);
-	Client->NoDelay = true;
-	Client->ReceiveTimeout = 500;
-	Client->SendTimeout = 500;
-	Client->ReceiveBufferSize = 8192;
-	Client->SendBufferSize = 1024;
+	Console::WriteLine("LiDAR connecting to {0}:{1}...", hostName, portNumber);
 
-	Stream = Client->GetStream();
-	ReadData = gcnew array<unsigned char>(8192);
-
-
-
-	
-	array<unsigned char>^ id = Encoding::ASCII->GetBytes(gcnew String(STUDENT_ID) + "\n");
-	Stream->Write(id, 0, id->Length);
-
-	int first = Stream->ReadByte();
-	int second = Stream->ReadByte();
-	int third = Stream->ReadByte();
-
-	if (first == 'O' && second == 'K' && third == '\n')
+	try
 	{
-		Console::WriteLine("Connected successfully.");
+		Client = gcnew TcpClient(hostName, portNumber);
+		Client->NoDelay = true;
+		Client->ReceiveTimeout = 5000;
+		Client->SendTimeout = 500;
+		Client->ReceiveBufferSize = 8192;
+		Client->SendBufferSize = 1024;
+
+		Stream = Client->GetStream();
+		ReadData = gcnew array<unsigned char>(8192);
+
+		array<unsigned char>^ id = Encoding::ASCII->GetBytes(gcnew String(STUDENT_ID) + "\n");
+		Stream->Write(id, 0, id->Length);
+
+		int n = Stream->Read(ReadData, 0, ReadData->Length);
+		String^ reply = Encoding::ASCII->GetString(ReadData, 0, n);
+		Console::WriteLine("LiDAR auth reply: [{0}]", reply->Replace("\r", "\\r")->Replace("\n", "\\n"));
+
+		if (!reply->StartsWith("OK"))
+		{
+			Console::WriteLine("LiDAR auth failed");
+			return ERR_CONNECTION;
+		}
 	}
-	else
+	catch (Exception^ e)
 	{
-		Console::WriteLine("Failed to connect LiDAR.");
+		Console::WriteLine("LiDAR connect failed: {0}", e->Message);
 		return ERR_CONNECTION;
 	}
 
-
+	Console::WriteLine("Connected successfully.");
 	return SUCCESS;
 }
 error_state LiDAR::communicate()
