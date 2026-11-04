@@ -14,7 +14,7 @@ error_state ThreadManagement::processSharedMemory() {
 }
 
 void ThreadManagement::shutdownModules() {
-	TMT_SM_TM_->shutdown = true;
+	TMT_SM_TM_->shutdown = 0xFF;
 }
 
 bool ThreadManagement::getShutdownFlag() {

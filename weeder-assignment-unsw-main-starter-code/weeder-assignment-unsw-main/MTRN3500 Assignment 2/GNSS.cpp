@@ -93,3 +93,6 @@ error_state GNSS::processSharedMemory()
 {
 	return error_state::SUCCESS;
 }
+error_state GNSS::connect(String^ hostName, int portNumber) {
+	return error_state::SUCCESS;
+}
