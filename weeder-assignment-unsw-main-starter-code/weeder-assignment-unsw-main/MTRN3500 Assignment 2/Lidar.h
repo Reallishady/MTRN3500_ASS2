@@ -74,7 +74,7 @@ private:
 
 		for (int i = 0; i < NUM_POINTS; i++)
 		{
-			sb->AppendFormat("{0,3}: ({1,7:F3}, {2,7:F3})    ", i, ParsedX[i], ParsedY[i]);
+			sb->AppendFormat("{0,3}: ({1,6:F0}, {2,6:F0}) mm    ", i, ParsedX[i], ParsedY[i]);
 			if ((i + 1) % 4 == 0)
 				sb->AppendLine();
 		}

@@ -1,7 +1,6 @@
 #include "Lidar.h"
 static const char* STUDENT_ID = "5492432";
-//const char* LIDAR_ADDRESS = "192.168.1.200";
-const char* LIDAR_ADDRESS = "127.0.0.1";
+
 static bool countWarned = false;
 
 
@@ -52,7 +51,7 @@ bool LiDAR::getShutdownFlag()
 }
 
 void LiDAR::threadFunction() {
-	bool connected = (connect(gcnew String(LIDAR_ADDRESS), LIDAR_PORT) == error_state::SUCCESS);
+	bool connected = (connect(gcnew String( WEEDER_ADDRESS), LIDAR_PORT) == error_state::SUCCESS);
 
 	LiDAR_SM_TM_->ThreadBarrier->SignalAndWait();
 	if (!connected)
@@ -64,8 +63,10 @@ void LiDAR::threadFunction() {
 	}
 
 	LiDAR_Stopwatch->Start();
-	Stopwatch^ sinceGoodScan = Stopwatch::StartNew();
+	Stopwatch^  byteScan = Stopwatch::StartNew();
 	Stopwatch^ printTimer = Stopwatch::StartNew();
+
+
 	while (!getShutdownFlag())
 	{
 		if (processHeartbeats() != error_state::SUCCESS)
@@ -75,7 +76,7 @@ void LiDAR::threadFunction() {
 			checkData() == error_state::SUCCESS &&
 			processSharedMemory() == error_state::SUCCESS)
 		{
-			sinceGoodScan->Restart();
+			 byteScan->Restart();
 
 			if (printTimer->ElapsedMilliseconds > 500)
 			{
@@ -88,7 +89,7 @@ void LiDAR::threadFunction() {
 		{
 			break;      
 		}
-		else if (sinceGoodScan->ElapsedMilliseconds > MAX_INVALID_SCAN_MS)
+		else if ( byteScan->ElapsedMilliseconds > MAX_INVALID_SCAN_MS)
 		{
 			Console::WriteLine("LiDAR lost - shutting down all threads");
 			shutdownThreads();
@@ -123,7 +124,7 @@ error_state LiDAR::connect(String^ hostName, int portNumber)
 
 		int n = Stream->Read(ReadData, 0, ReadData->Length);
 		String^ reply = Encoding::ASCII->GetString(ReadData, 0, n);
-		Console::WriteLine("LiDAR auth reply: [{0}]", reply->Replace("\r", "\\r")->Replace("\n", "\\n"));
+		
 
 		if (!reply->StartsWith("OK"))
 		{
@@ -285,7 +286,6 @@ error_state LiDAR::processSharedMemory()
 		return error_state::ERR_INVALID_DATA;
 	}
 
-	// Lock held only for the copy
 	Monitor::Enter(LiDAR_SM_LiDAR_->lockObject);
 	try
 	{
