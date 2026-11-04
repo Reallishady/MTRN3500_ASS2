@@ -3,6 +3,8 @@ static const char* STUDENT_ID = "5492432";
 //const char* LIDAR_ADDRESS = "192.168.1.200";
 const char* LIDAR_ADDRESS = "127.0.0.1";
 static bool countWarned = false;
+
+
 LiDAR::LiDAR(SM_ThreadManagement^ SM_TM, SM_LiDAR^ SM_lidar)
 {
 	LiDAR_SM_TM_ = SM_TM;
@@ -17,6 +19,7 @@ error_state LiDAR::setupShareMemory()
 {
 	return error_state::SUCCESS;
 }
+
 error_state LiDAR::processHeartbeats()
 {
 	
@@ -37,6 +40,7 @@ error_state LiDAR::processHeartbeats()
 	}
 	return error_state::SUCCESS;
 }
+
 void LiDAR::shutdownThreads()
 {
 	LiDAR_SM_TM_->shutdown = 0xFF;
@@ -46,6 +50,7 @@ bool LiDAR::getShutdownFlag()
 {
 	return (LiDAR_SM_TM_->shutdown & bit_LiDAR) != 0;
 }
+
 void LiDAR::threadFunction() {
 	bool connected = (connect(gcnew String(LIDAR_ADDRESS), LIDAR_PORT) == error_state::SUCCESS);
 
@@ -96,6 +101,7 @@ void LiDAR::threadFunction() {
 	disconnect();
 	Console::WriteLine("LiDAR Thread is terminated");
 }
+
 error_state LiDAR::connect(String^ hostName, int portNumber)
 {
 	Console::WriteLine("LiDAR connecting to {0}:{1}...", hostName, portNumber);
@@ -134,6 +140,7 @@ error_state LiDAR::connect(String^ hostName, int portNumber)
 	Console::WriteLine("Connected successfully.");
 	return SUCCESS;
 }
+
 error_state LiDAR::communicate()
 {
 	try
@@ -150,6 +157,7 @@ error_state LiDAR::communicate()
 
 	return error_state::SUCCESS;
 }
+
 void LiDAR::sendCommand(String^ cmd)
 {
 	array<unsigned char>^ payload = Encoding::ASCII->GetBytes(cmd);
