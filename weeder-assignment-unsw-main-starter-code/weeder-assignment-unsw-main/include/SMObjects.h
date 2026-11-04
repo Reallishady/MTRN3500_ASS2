@@ -29,8 +29,8 @@ constexpr uint8_t CRITICALMASK =    0x00;
 
 constexpr uint8_t bit_ALL =             0b01111111;
 constexpr uint8_t bit_TM =              0b00000001;
-constexpr uint8_t bit_LASER =           0b00000010;
-constexpr uint8_t bit_GPS =             0b00000100;
+constexpr uint8_t bit_LiDAR =           0b00000010;
+constexpr uint8_t bit_GNSS =             0b00000100;
 constexpr uint8_t bit_VC =              0b00001000;
 constexpr uint8_t bit_CONTROLLER =      0b00010000;
 constexpr uint8_t bit_DISPLAY =         0b00100000;
@@ -52,22 +52,25 @@ public:
 
 // This is the size of the data recieved from the laser
 #define STANDARD_LASER_LENGTH 361
+#define CRASH_LIMIT 1000
 
-ref class SM_Laser
+ref class SM_LiDAR
 {
 public:
     Object^ lockObject;
     array<double>^ x;
     array<double>^ y;
 
-    SM_Laser() {
+    SM_LiDAR() {
         lockObject = gcnew Object();
         x = gcnew array<double>(STANDARD_LASER_LENGTH);
         y = gcnew array<double>(STANDARD_LASER_LENGTH);
+ 
+
     }
 };
 
-ref class SM_GPS
+ref class SM_GNSS
 {
 public:
     Object^ lockObject;
@@ -75,7 +78,7 @@ public:
     double Easting;
     double Height;
 
-    SM_GPS() {
+    SM_GNSS() {
         lockObject = gcnew Object();
     }
 };
