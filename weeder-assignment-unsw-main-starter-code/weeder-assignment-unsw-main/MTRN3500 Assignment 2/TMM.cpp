@@ -5,6 +5,7 @@ error_state ThreadManagement::setupSharedMemory() {
 	TMT_SM_TM_ = gcnew SM_ThreadManagement;
 	TMT_SM_LiDAR_ = gcnew SM_LiDAR;
 	TMT_SM_GNSS_ = gcnew SM_GNSS;
+	TMT_SM_VC_ = gcnew SM_VehicleControl;
 
 	return error_state::SUCCESS;
 }

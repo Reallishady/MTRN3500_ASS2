@@ -51,9 +51,12 @@ private:
     SM_ThreadManagement^ TMT_SM_TM_;
     SM_LiDAR^ TMT_SM_LiDAR_;
     SM_GNSS^ TMT_SM_GNSS_;
+    SM_VehicleControl^ TMT_SM_VC_;
+
     array<Stopwatch^>^ TMT_StopwatchList;
     array<Thread^>^ ThreadList;
     array<ThreadProperties^>^ ThreadPropertiesList;
+
     error_state processHeartbeats();
     
 };
