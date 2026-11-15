@@ -1,4 +1,4 @@
-#include "Lidar.h"
+#include "LiDAR.h"
 static const char* STUDENT_ID = "5492432";
 
 static bool countWarned = false;
@@ -80,7 +80,7 @@ void LiDAR::threadFunction() {
 
 			if (printTimer->ElapsedMilliseconds > 500)
 			{
-				printScan();
+				//printScan();
 				printTimer->Restart();
 			}
 
@@ -113,7 +113,7 @@ error_state LiDAR::connect(String^ hostName, int portNumber)
 		Client->NoDelay = true;
 		Client->ReceiveTimeout = 5000;
 		Client->SendTimeout = 500;
-		Client->ReceiveBufferSize = 8192;
+		Client->ReceiveBufferSize = 8192; // set consts for these
 		Client->SendBufferSize = 1024;
 
 		Stream = Client->GetStream();

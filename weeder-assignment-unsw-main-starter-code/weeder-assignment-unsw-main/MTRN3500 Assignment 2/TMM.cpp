@@ -68,7 +68,8 @@ void ThreadManagement::threadFunction() {
 	//make a list of thread properties
 	ThreadPropertiesList = gcnew array<ThreadProperties^>{
 		gcnew ThreadProperties(gcnew ThreadStart(gcnew LiDAR(TMT_SM_TM_, TMT_SM_LiDAR_), &LiDAR::threadFunction), true, bit_LiDAR, "LiDAR Thread"),
-			gcnew ThreadProperties(gcnew ThreadStart(gcnew GNSS(TMT_SM_TM_, TMT_SM_GNSS_), &GNSS::threadFunction), false, bit_GNSS, "GNSS Thread"),
+		gcnew ThreadProperties(gcnew ThreadStart(gcnew GNSS(TMT_SM_TM_, TMT_SM_GNSS_), &GNSS::threadFunction), false, bit_GNSS, "GNSS Thread"),
+		gcnew ThreadProperties(gcnew ThreadStart(gcnew Display(TMT_SM_TM_, TMT_SM_LiDAR_), &Display::threadFunction), true, bit_DISPLAY, "Display Thread"),
 	};
 
 	//make a list of thread

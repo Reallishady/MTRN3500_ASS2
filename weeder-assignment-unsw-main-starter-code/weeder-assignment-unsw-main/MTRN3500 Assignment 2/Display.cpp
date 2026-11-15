@@ -1,77 +1,136 @@
 #include "Display.h"
 
-Display::Display(SM_ThreadManagement^ SM_TM, SM_LiDAR^ SM_lidar)
+Display::Display(SM_ThreadManagement^ SM_TM, SM_LiDAR^ SM_Lidar)
 {
 	UGV_SM_TM_ = SM_TM;
-	Display_SM_LiDAR_ = SM_lidar;
-	
+	Display_SM_Lidar_ = SM_Lidar;
+	Display_Stopwatch = gcnew Stopwatch;
+	DisplayX = gcnew array<double>(STANDARD_LASER_LENGTH);
+	DisplayY = gcnew array<double>(STANDARD_LASER_LENGTH);
 }
 
+error_state Display::processHeartbeats()
+{
+	if ((UGV_SM_TM_->heartbeat & bit_DISPLAY) == 0)
+	{
+		UGV_SM_TM_->heartbeat |= bit_DISPLAY;
+		Display_Stopwatch->Restart();
+	}
+	else if (Display_Stopwatch->ElapsedMilliseconds > CRASH_LIMIT)
+	{
+		Console::WriteLine("Display: TM not responding - shutting down all threads");
+		shutdownModules();
+		return error_state::ERR_TMT_FAILURE;
+	}
+
+	return error_state::SUCCESS;
+}
 // Send/Recieve data from shared memory structures
 error_state Display::processSharedMemory()
 {
+	Monitor::Enter(Display_SM_Lidar_->lockObject);
+	try
+	{
+		Array::Copy(Display_SM_Lidar_->x, DisplayX, STANDARD_LASER_LENGTH);
+		Array::Copy(Display_SM_Lidar_->y, DisplayY, STANDARD_LASER_LENGTH);
+	}
+	finally
+	{
+		Monitor::Exit(Display_SM_Lidar_->lockObject);
+	}
+
 	return error_state::SUCCESS;
 }
-
 // Shutdown all modules in the software
 void Display::shutdownModules()
 {
-
+	UGV_SM_TM_->shutdown = 0xFF;
 
 }
 
 // Get Shutdown signal for module, from Thread Management SM
 bool Display::getShutdownFlag()
 {
-	return bit_DISPLAY;
+	return (UGV_SM_TM_->shutdown && bit_DISPLAY) != 0;
 }
 
 // Thread function for TMM
 void Display::threadFunction()
 {
+	bool connected = (connect(gcnew String(DISPLAY_ADDRESS), DISPLAY_PORT) == error_state::SUCCESS);
 
+	UGV_SM_TM_->ThreadBarrier->SignalAndWait();
+	if (!connected)
+	{
+		Console::WriteLine("Display failed to connect - shutting down all threads");
+		shutdownModules();
+		return;
+	}
+
+	Display_Stopwatch->Start();
+
+	while (!getShutdownFlag())
+	{
+		if (processHeartbeats() != error_state::SUCCESS)
+			break;
+
+		processSharedMemory();
+
+		if (communicate() != error_state::SUCCESS)
+		{
+			Console::WriteLine("Display lost connection to MATLAB - shutting down all threads");
+			shutdownModules();
+			break;
+		}
+
+		Thread::Sleep(50);
+	}
+
+	try
+	{
+		if (Stream != nullptr) Stream->Close();
+		if (Client != nullptr) Client->Close();
+	}
+	catch (Exception^)
+	{
+	}
+
+	Console::WriteLine("Display Thread is terminated");
+
+}
+
+
+
+error_state Display::communicate()
+{
+	try
+	{
+		sendDisplayData(DisplayX, DisplayY, Stream);
+	}
+	catch (System::IO::IOException^)
+	{
+		return error_state::ERR_CONNECTION;
+	}
+
+	return error_state::SUCCESS;
 }
 
 error_state Display::connect(String^ hostName, int portNumber)
 {
-	Client = gcnew TcpClient(hostName, portNumber);
-	Stream = Client->GetStream();
-	Client->NoDelay = true;
-	Client->ReceiveTimeout = 500;
-	Client->SendTimeout = 500;
-	Client->ReceiveBufferSize = 1024;
-	Client->SendBufferSize = 1024;
+	try
+	{
+		Client = gcnew TcpClient(hostName, portNumber);
+		Client->NoDelay = true;
+		Client->SendTimeout = 500;
+		Client->SendBufferSize = 8192;   
+		Stream = Client->GetStream();
+	}
+	catch (Exception^ e)
+	{
+		Console::WriteLine("Display connect failed: {0}", e->Message);
+		return error_state::ERR_CONNECTION;
+	}
 
-	SendData = gcnew array<unsigned char>(64);
-	ReadData = gcnew array<unsigned char>(64);
-
+	Console::WriteLine("Display connected to MATLAB");
 	return error_state::SUCCESS;
 }
-
-error_state Display::communicate()
-{
-	sendDisplayData();
-	return error_state::SUCCESS;
-}
-
-
-
-//void Display::sendDisplayData()
-//{
-//	// Serialize the data arrays to a byte array
-//	//(format required for sending)
-//
-//	Monitor::Enter(Display_SM_LiDAR_->lockObject);
-//
-//	array<Byte>^ dataX = gcnew array<Byte>(Display_SM_LiDAR_->x->Length * sizeof(double));
-//	Buffer::BlockCopy(Display_SM_LiDAR_->x, 0, dataX, 0, dataX->Length);
-//	array<Byte>^ dataY = gcnew array<Byte>(Display_SM_LiDAR_->y->Length * sizeof(double));
-//	Buffer::BlockCopy(Display_SM_LiDAR_->y, 0, dataY, 0, dataY->Length);
-//
-//	Monitor::Exit(Display_SM_LiDAR_->lockObject);
-//
-//	// Send byte data over connection 
-//	Stream->Write(dataX, 0, dataX->Length);
-//	Thread::Sleep(10);
-//	Stream->Write(dataY, 0, dataY->Length);
-//}

@@ -4,6 +4,13 @@
 #include "SMObjects.h"
 #include "NetworkedModule.h"
 
+using namespace System;
+using namespace System::Threading;
+using namespace System::Diagnostics;
+using namespace System::IO;
+using namespace System::Globalization;
+
+const int  DISPLAY_PORT = 28000;
 ref class Display : public NetworkedModule
 {
 public:
@@ -27,32 +34,34 @@ public:
 
 	virtual error_state communicate() override;
 
-	void sendDisplayData();
+	error_state processHeartbeats();
+
+	
 
 	
 
 private:
 	//List of inherited data members
 	SM_ThreadManagement^ UGV_SM_TM_;
-	TcpClient^ Client;				
-	NetworkStream^ Stream;			
-	array<unsigned char>^ ReadData;
+	SM_LiDAR^ Display_SM_Lidar_;
+	Stopwatch^ Display_Stopwatch;
 
-	SM_LiDAR^ Display_SM_LiDAR_;
-	
+	array<double>^ DisplayX;
+	array<double>^ DisplayY;
+
 
 	void sendDisplayData(array<double> ^ xData, array<double> ^ yData,
 		NetworkStream ^ stream)
 	{
 
 		// Serialize the data arrays to a byte array 
-		//(format required for sending) 
-		array<Byte> ^ dataX =
-			gcnew array<Byte>(xData->Length * sizeof(double));
+		
+		array<Byte> ^ dataX = gcnew array<Byte>(xData->Length * sizeof(double));
 		Buffer::BlockCopy(xData, 0, dataX, 0, dataX->Length);
-		array<Byte>^ dataY =
-			gcnew array<Byte>(yData->Length * sizeof(double));
+
+		array<Byte>^ dataY = gcnew array<Byte>(yData->Length * sizeof(double));
 		Buffer::BlockCopy(yData, 0, dataY, 0, dataY->Length);
+
 		// Send byte data over connection 
 		Stream->Write(dataX, 0, dataX->Length);
 		Thread::Sleep(10);

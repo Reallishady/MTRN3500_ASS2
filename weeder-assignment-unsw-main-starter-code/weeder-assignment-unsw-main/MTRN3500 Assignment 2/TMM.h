@@ -4,9 +4,10 @@
 #include "SMObjects.h"
 #include "Lidar.h"
 #include "GNSS.h"
-
+#include "Display.h"
 #using <System.dll>
 #include <cstdint>
+
 using namespace System;
 using namespace System::Threading;
 using namespace System::Diagnostics;

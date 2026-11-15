@@ -138,7 +138,7 @@
     <ClInclude Include="CrashAvoidance.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="GNSS.h" />
-    <ClInclude Include="Lidar.h" />
+    <ClInclude Include="LiDAR.h" />
     <ClInclude Include="TMM.h" />
     <ClInclude Include="VC.h" />
   </ItemGroup>
@@ -147,7 +147,7 @@
     <ClCompile Include="CrashAvoidance.cpp" />
     <ClCompile Include="Display.cpp" />
     <ClCompile Include="GNSS.cpp" />
-    <ClCompile Include="Lidar.cpp" />
+    <ClCompile Include="LiDAR.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="TMM.cpp" />
     <ClCompile Include="VC.cpp" />

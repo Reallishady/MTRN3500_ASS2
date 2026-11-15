@@ -1,3 +1,3 @@
-clear; clc; close all;
+ioclear; clc; close all;
 
 runDisplayEngine_legacy();

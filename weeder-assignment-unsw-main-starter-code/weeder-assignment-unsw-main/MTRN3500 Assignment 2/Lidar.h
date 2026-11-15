@@ -47,6 +47,8 @@ private:
 	int DistIndex;                        
 	array<double>^ ParsedX;               
 	array<double>^ ParsedY;
+
+
 	float hexToFloat(String^ hex)
 	{
 		return BitConverter::ToSingle(BitConverter::GetBytes(Convert::ToUInt32(hex, 16)), 0);
