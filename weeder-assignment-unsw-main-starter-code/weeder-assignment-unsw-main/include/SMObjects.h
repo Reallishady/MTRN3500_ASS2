@@ -26,6 +26,10 @@ using namespace System::Diagnostics;
 // You should change this based on what processes are and are not critical
 constexpr uint8_t NONCRITICALMASK = 0xff;
 constexpr uint8_t CRITICALMASK =    0x00;
+static const char* STUDENT_ID = "5492432";
+const  double MAX_SPEED = 1.0;
+const double MAX_STEER = 40.0;
+
 
 constexpr uint8_t bit_ALL =             0b01111111;
 constexpr uint8_t bit_TM =              0b00000001;
@@ -53,6 +57,7 @@ public:
 // This is the size of the data recieved from the laser
 #define STANDARD_LASER_LENGTH 361
 #define CRASH_LIMIT 1000
+
 
 ref class SM_LiDAR
 {

@@ -5,7 +5,6 @@
 
 
 
-
 ref class Controller : public UGVModule
 {
 public:
@@ -16,9 +15,14 @@ public:
     virtual error_state processSharedMemory() override;
     virtual bool getShutdownFlag() override;
 
+    error_state processHeartbeats();
+
 private:
     SM_VehicleControl^ SM_VC_;
     ControllerInterface* controller_;
 
     Stopwatch^ Controller_Stopwatch;
+
+    double speed;
+    double steering;
 };

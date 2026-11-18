@@ -31,8 +31,12 @@ error_state Display::processSharedMemory()
 	Monitor::Enter(Display_SM_Lidar_->lockObject);
 	try
 	{
-		Array::Copy(Display_SM_Lidar_->x, DisplayX, STANDARD_LASER_LENGTH);
-		Array::Copy(Display_SM_Lidar_->y, DisplayY, STANDARD_LASER_LENGTH);
+		
+		for (int i = 0; i < STANDARD_LASER_LENGTH; i++)
+		{
+			DisplayX[i] = -Display_SM_Lidar_->y[i];
+			DisplayY[i] = Display_SM_Lidar_->x[i];
+		}
 	}
 	finally
 	{
@@ -41,7 +45,7 @@ error_state Display::processSharedMemory()
 
 	return error_state::SUCCESS;
 }
-// Shutdown all modules in the software
+
 void Display::shutdownModules()
 {
 	UGV_SM_TM_->shutdown = 0xFF;

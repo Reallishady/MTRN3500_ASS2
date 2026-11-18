@@ -1,4 +1,4 @@
-#using <System.dll>
+
 #include "GNSS.h"
 
 using namespace System;
@@ -108,7 +108,7 @@ error_state GNSS::communicate()
 			header = (header << 8) | (unsigned int)b;
 		}
 
-		// found the header, now grab the rest of the packet
+		
 		ReadData[0] = 0xAA; ReadData[1] = 0x44; ReadData[2] = 0x12; ReadData[3] = 0x1C;
 		int packet_count = 4;
 

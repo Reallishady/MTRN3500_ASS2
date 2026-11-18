@@ -15,23 +15,8 @@ Controller::~Controller()
     delete controller_;
 }
 
-void Controller::threadFunction()
-{
-    SM_TM_->ThreadBarrier->SignalAndWait();
 
-    while (!getShutdownFlag())
-    {
-        SM_TM_->heartbeat |= bit_CONTROLLER;   
-        System::Threading::Thread::Sleep(20);
-    }
 
-    System::Console::WriteLine("Controller thread terminated");
-}
-
-error_state Controller::processSharedMemory()
-{
-    return SUCCESS;
-}
 
 bool Controller::getShutdownFlag()
 {

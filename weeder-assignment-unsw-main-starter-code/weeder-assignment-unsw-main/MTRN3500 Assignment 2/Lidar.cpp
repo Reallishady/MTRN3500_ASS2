@@ -1,5 +1,5 @@
 #include "LiDAR.h"
-static const char* STUDENT_ID = "5492432";
+
 
 static bool countWarned = false;
 
