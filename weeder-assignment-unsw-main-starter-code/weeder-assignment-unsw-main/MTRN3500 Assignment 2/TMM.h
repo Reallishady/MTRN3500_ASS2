@@ -5,6 +5,7 @@
 #include "Lidar.h"
 #include "GNSS.h"
 #include "Display.h"
+#include "VC.h"
 
 #using <System.dll>
 #include <cstdint>

@@ -5,7 +5,7 @@ Controller::Controller(SM_ThreadManagement^ SM_TM, SM_VehicleControl^ SM_VC)
     SM_TM_ = SM_TM;
     SM_VC_ = SM_VC;
     controller_ = new ControllerInterface(1,0);
-    Stopwatch^ Controller_Stopwatch = gcnew Stopwatch;
+    Controller_Stopwatch = gcnew Stopwatch;
     speed = 0;
     steering = 0;
 }
@@ -73,7 +73,7 @@ void Controller::threadFunction()
 
             // right trigger forward, left trigger reverse, right stick x steers
             speed = (state.rightTrigger - state.leftTrigger) * MAX_SPEED;
-            steering = state.rightThumbX * MAX_STEER;
+            steering = -(state.rightThumbX * MAX_STEER);
 
             if (state.buttonA)
             {
