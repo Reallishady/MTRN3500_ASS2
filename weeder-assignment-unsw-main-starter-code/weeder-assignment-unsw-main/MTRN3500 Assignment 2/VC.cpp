@@ -108,7 +108,7 @@ error_state VehicleControl::connect(String^ hostName, int portNumber)
 	{
 		Client = gcnew TcpClient(hostName, portNumber);
 		Client->NoDelay = true;
-		Client->ReceiveTimeout = 5000;
+		Client->ReceiveTimeout = 500;
 		Client->SendTimeout = 500;
 
 		Stream = Client->GetStream();
@@ -140,8 +140,7 @@ error_state VehicleControl::connect(String^ hostName, int portNumber)
 
 error_state VehicleControl::communicate()
 {
-	String^ cmd = String::Format(CultureInfo::InvariantCulture,
-		"# {0:F2} {1:F2} {2} #", steering_, speed_, wdog_);
+	String^ cmd = "# " + steering_ + " " + speed_ + " " + wdog_ + " #";
 
 	try
 	{

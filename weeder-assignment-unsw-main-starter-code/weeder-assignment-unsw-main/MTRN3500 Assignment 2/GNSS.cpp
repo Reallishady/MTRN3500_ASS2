@@ -19,7 +19,7 @@ error_state GNSS::setupShareMemory()
 
 void GNSS::threadFunction()
 {
-	bool connected = (connect(gcnew String(DISPLAY_ADDRESS), GNSS_PORT) == error_state::SUCCESS);
+	bool connected = (connect(gcnew String(WEEDER_ADDRESS), GNSS_PORT) == error_state::SUCCESS);
 
 	
 	if (!connected)

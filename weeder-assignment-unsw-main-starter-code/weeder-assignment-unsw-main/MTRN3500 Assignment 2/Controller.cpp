@@ -69,9 +69,10 @@ void Controller::threadFunction()
 
         if (controller_->IsConnected())
         {
+            
             controllerState state = controller_->GetState();
-
-            // right trigger forward, left trigger reverse, right stick x steers
+            controller_->printControllerState(state);
+          
             speed = (state.rightTrigger - state.leftTrigger) * MAX_SPEED;
             steering = -(state.rightThumbX * MAX_STEER);
 
