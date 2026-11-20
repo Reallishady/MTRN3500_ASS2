@@ -45,6 +45,7 @@ error_state VehicleControl::processSharedMemory()
 	try
 	{
 		speed_ = SM_VC_->Speed;
+		Console::WriteLine(" VC: cmd: {0:F2} cap {1:F2}", speed_, SM_VC_->maxForwardSpeed);
 		steering_ = SM_VC_->Steering;
 
 	

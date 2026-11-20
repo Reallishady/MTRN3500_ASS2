@@ -14,7 +14,8 @@ public:
     virtual void threadFunction() override;
     virtual error_state processSharedMemory() override;
     virtual bool getShutdownFlag() override;
-    error_state CrashAvoidance::processHeartbeats();
+    error_state processHeartbeats();
+    void assess();
 
 private:
   
@@ -31,5 +32,6 @@ private:
     double steerOut_;
     int state_;
    
-   // void assess();
+
+    
 };

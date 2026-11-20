@@ -6,7 +6,7 @@
 #include "GNSS.h"
 #include "Display.h"
 #include "VC.h"
-
+#include "CrashAvoidance.h"
 #using <System.dll>
 #include <cstdint>
 

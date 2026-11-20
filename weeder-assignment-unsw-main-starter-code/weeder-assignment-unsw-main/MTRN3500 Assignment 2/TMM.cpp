@@ -72,7 +72,7 @@ void ThreadManagement::threadFunction() {
 		gcnew ThreadProperties(gcnew ThreadStart(gcnew Display(TMT_SM_TM_, TMT_SM_LiDAR_), &Display::threadFunction), true, bit_DISPLAY, "Display Thread"),
 		gcnew ThreadProperties(gcnew ThreadStart(gcnew Controller(TMT_SM_TM_, TMT_SM_VC_), &Controller::threadFunction), true, bit_CONTROLLER, "Controller Thread"),
 		gcnew ThreadProperties(gcnew ThreadStart(gcnew VehicleControl(TMT_SM_TM_, TMT_SM_VC_), &VehicleControl::threadFunction),true, bit_VC,"VC thread"),
-gcnew ThreadProperties(gcnew ThreadStart(gcnew CrashAvoidance(TMT_SM_TM_, TMT_SM_LiDAR_, TMT_SM_VC_), &CrashAvoidance::threadFunction), true, bit_CRASHAVOIDANCE, "CrashAvoidance Thread"),,
+		gcnew ThreadProperties(gcnew ThreadStart(gcnew CrashAvoidance(TMT_SM_TM_, TMT_SM_LiDAR_, TMT_SM_VC_), &CrashAvoidance::threadFunction), true, bit_CRASHAVOIDANCE, "CrashAvoidance Thread"),
 	};
 
 	//make a list of thread
