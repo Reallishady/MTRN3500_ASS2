@@ -46,15 +46,21 @@ error_state VehicleControl::processSharedMemory()
 	{
 		speed_ = SM_VC_->Speed;
 		steering_ = SM_VC_->Steering;
+
+	
+		if (speed_ > SM_VC_->maxForwardSpeed)
+			speed_ = SM_VC_->maxForwardSpeed;
+		if (SM_VC_->steerLimited)
+			steering_ = SM_VC_->steerLimit;
 	}
 	finally
 	{
 		Monitor::Exit(SM_VC_->lockObject);
 	}
 
-	
-	speed_ = Math::Max(-MAX_SPEED, Math::Min(MAX_SPEED, speed_));
-	steering_ = Math::Max(-MAX_STEER, Math::Min(MAX_STEER, steering_));
+
+	speed_ = Math::Max(-MAX_SPEED_MS, Math::Min(MAX_SPEED_MS, speed_));
+	steering_ = Math::Max(-MAX_STEER_DEG, Math::Min(MAX_STEER_DEG, steering_));
 
 	return error_state::SUCCESS;
 }
