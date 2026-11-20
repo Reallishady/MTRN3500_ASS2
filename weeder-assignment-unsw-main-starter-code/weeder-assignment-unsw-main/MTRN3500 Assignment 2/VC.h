@@ -35,7 +35,7 @@ private:
     }
     double speed_;
     double steering_;
-    int wdog_;
+    bool wdog_;
     void disconnect()
     {
         try
