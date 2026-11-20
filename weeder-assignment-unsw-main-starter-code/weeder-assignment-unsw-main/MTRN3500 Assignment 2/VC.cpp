@@ -1,5 +1,5 @@
 #include "VC.h"
-
+#include "SMObjects.h"
 VehicleControl::VehicleControl(SM_ThreadManagement^ SM_TM, SM_VehicleControl^ SM_VC)
 {
 	SM_TM_ = SM_TM;
@@ -59,8 +59,8 @@ error_state VehicleControl::processSharedMemory()
 	}
 
 
-	speed_ = Math::Max(-MAX_SPEED_MS, Math::Min(MAX_SPEED_MS, speed_));
-	steering_ = Math::Max(-MAX_STEER_DEG, Math::Min(MAX_STEER_DEG, steering_));
+	speed_ = Math::Max(-MAX_SPEED, Math::Min(MAX_SPEED, speed_));
+	steering_ = Math::Max(-MAX_STEER, Math::Min(MAX_STEER, steering_));
 
 	return error_state::SUCCESS;
 }

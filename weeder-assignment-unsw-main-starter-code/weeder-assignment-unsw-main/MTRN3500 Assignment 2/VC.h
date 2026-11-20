@@ -29,13 +29,15 @@ public:
 private:
     SM_VehicleControl^ SM_VC_;
     Stopwatch^ VC_Stopwatch;
+    double speed_;
+    double steering_;
+    int wdog_;
+
     void shutdownModules()
     {
         SM_TM_->shutdown = 0xFF;
     }
-    double speed_;
-    double steering_;
-    int wdog_;
+   ;
     void disconnect()
     {
         try

@@ -30,9 +30,7 @@ static const char* STUDENT_ID = "5492432";
 const  double MAX_SPEED = 1.0;
 const double MAX_STEER = 40.0;
 
-double maxForwardSpeed;
-bool steerLimited;
-double steerLimit;
+
 
 
 constexpr uint8_t bit_ALL =             0b01111111;
@@ -98,8 +96,14 @@ public:
     Object^ lockObject;
     double Speed;
     double Steering;
-
+    double maxForwardSpeed;
+    bool steerLimited = false;
+    double steerLimit = 0;
     SM_VehicleControl() {
         lockObject = gcnew Object();
+        maxForwardSpeed = 0;
+        steerLimited = false;
+        steerLimit = 0;
+
     }
 };

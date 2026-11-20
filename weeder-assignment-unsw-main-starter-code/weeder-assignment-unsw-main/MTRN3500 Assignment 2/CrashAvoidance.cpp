@@ -10,7 +10,7 @@ const double SIDE_WIDTH     = 500.0;
 const double SLOW_DIST      = 1000.0;  
 const double STOP_DIST      = 600.0;   
 const double MIN_RANGE      = 50.0;    
-const double MAX_SPEED      = 1.0;     
+
 const double STEER_DEADBAND = 2.0;   
 const double STEER_SIGN     = -1.0;    
 const double CLEAR          = 1e9;    
@@ -37,15 +37,15 @@ CrashAvoidance::~CrashAvoidance()
 
 bool CrashAvoidance::getShutdownFlag()
 {
-    return (SM_TM_->shutdown & bit_CA) != 0;
+    return (SM_TM_->shutdown & bit_CRASHAVOIDANCE) != 0;
 }
 
 
 error_state CrashAvoidance::processHeartbeats()
 {
-    if ((SM_TM_->heartbeat & bit_CA) == 0)
+    if ((SM_TM_->heartbeat & bit_CRASHAVOIDANCE) == 0)
     {
-        SM_TM_->heartbeat |= bit_CA;
+        SM_TM_->heartbeat |= bit_CRASHAVOIDANCE;
         watch_->Restart();
     }
     else if (watch_->ElapsedMilliseconds > CRASH_LIMIT)
@@ -58,65 +58,65 @@ error_state CrashAvoidance::processHeartbeats()
     return error_state::SUCCESS;
 }
 
-void CrashAvoidance::assess()
-{
-
-    double steerLeft = STEER_SIGN * steering_;
-    int turn = 0;
-    if (steerLeft > STEER_DEADBAND)       turn = 1;
-    else if (steerLeft < -STEER_DEADBAND) turn = -1;
-
-    double ahead = CLEAR;
-    double side = CLEAR;  
-
-    for (int i = 0; i < STANDARD_LASER_LENGTH; i++)
-    {
-        double x = laserX_[i];
-        double y = laserY_[i];
-
-        // skip bad readings and anything level with or behind the LiDAR
-        if (x <= 0 || Math::Sqrt(x * x + y * y) < MIN_RANGE)
-            continue;
-
-        if (Math::Abs(y) <= HALF_WIDTH)
-        {
-            // inside the UGV's width, we'd hit this going straight
-            ahead = Math::Min(ahead, x);
-        }
-        else if (turn * y > 0 && Math::Abs(y) <= HALF_WIDTH + SIDE_WIDTH)
-        {
-            // just outside the UGV's width, on the side we're turning towards
-            side = Math::Min(side, x);
-        }
-    }
-
-    // turning into something: straighten the wheels. only when going forward,
-    // there's no LiDAR behind so reversing is left to the driver
-    steerLimited_ = (side <= SLOW_DIST && speed_ >= 0);
-    steerOut_ = steerLimited_ ? 0.0 : steering_;
-
-    // speed cap from whatever's directly ahead: full speed past SLOW_DIST, 0 at STOP_DIST
-    double scale = (ahead - STOP_DIST) / (SLOW_DIST - STOP_DIST);
-    maxSpeed_ = MAX_SPEED * Math::Max(0.0, Math::Min(1.0, scale));
-
-    // only print when the state changes, otherwise it spams at 50 Hz
-    int newState = 0;                              // clear
-    if (maxSpeed_ <= 0.0)            newState = 3; // stopped
-    else if (steerLimited_)          newState = 2; // steering straightened
-    else if (maxSpeed_ < MAX_SPEED)  newState = 1; // slowed down
-
-    if (newState != state_)
-    {
-        switch (newState)
-        {
-        case 0: Console::WriteLine("CRASH AVOIDANCE: path clear"); break;
-        case 1: Console::WriteLine("CRASH AVOIDANCE: obstacle {0:F0} mm ahead - slowing down", ahead); break;
-        case 2: Console::WriteLine("CRASH AVOIDANCE: obstacle {0:F0} mm away on the turning side - steering straightened", side); break;
-        case 3: Console::WriteLine("CRASH AVOIDANCE: obstacle {0:F0} mm ahead - stopped", ahead); break;
-        }
-        state_ = newState;
-    }
-}
+//void CrashAvoidance::assess()
+//{
+//
+//    double steerLeft = STEER_SIGN * steering_;
+//    int turn = 0;
+//    if (steerLeft > STEER_DEADBAND)       turn = 1;
+//    else if (steerLeft < -STEER_DEADBAND) turn = -1;
+//
+//    double ahead = CLEAR;
+//    double side = CLEAR;  
+//
+//    for (int i = 0; i < STANDARD_LASER_LENGTH; i++)
+//    {
+//        double x = laserX_[i];
+//        double y = laserY_[i];
+//
+//        // skip bad readings and anything level with or behind the LiDAR
+//        if (x <= 0 || Math::Sqrt(x * x + y * y) < MIN_RANGE)
+//            continue;
+//
+//        if (Math::Abs(y) <= HALF_WIDTH)
+//        {
+//            // inside the UGV's width, we'd hit this going straight
+//            ahead = Math::Min(ahead, x);
+//        }
+//        else if (turn * y > 0 && Math::Abs(y) <= HALF_WIDTH + SIDE_WIDTH)
+//        {
+//            // just outside the UGV's width, on the side we're turning towards
+//            side = Math::Min(side, x);
+//        }
+//    }
+//
+//    // turning into something: straighten the wheels. only when going forward,
+//    // there's no LiDAR behind so reversing is left to the driver
+//    steerLimited_ = (side <= SLOW_DIST && speed_ >= 0);
+//    steerOut_ = steerLimited_ ? 0.0 : steering_;
+//
+//    // speed cap from whatever's directly ahead: full speed past SLOW_DIST, 0 at STOP_DIST
+//    double scale = (ahead - STOP_DIST) / (SLOW_DIST - STOP_DIST);
+//    maxSpeed_ = MAX_SPEED * Math::Max(0.0, Math::Min(1.0, scale));
+//
+//    // only print when the state changes, otherwise it spams at 50 Hz
+//    int newState = 0;                              // clear
+//    if (maxSpeed_ <= 0.0)            newState = 3; // stopped
+//    else if (steerLimited_)          newState = 2; // steering straightened
+//    else if (maxSpeed_ < MAX_SPEED)  newState = 1; // slowed down
+//
+//    if (newState != state_)
+//    {
+//        switch (newState)
+//        {
+//        case 0: Console::WriteLine("CRASH AVOIDANCE: path clear"); break;
+//        case 1: Console::WriteLine("CRASH AVOIDANCE: obstacle {0:F0} mm ahead - slowing down", ahead); break;
+//        case 2: Console::WriteLine("CRASH AVOIDANCE: obstacle {0:F0} mm away on the turning side - steering straightened", side); break;
+//        case 3: Console::WriteLine("CRASH AVOIDANCE: obstacle {0:F0} mm ahead - stopped", ahead); break;
+//        }
+//        state_ = newState;
+//    }
+//}
 
 error_state CrashAvoidance::processSharedMemory()
 {
@@ -144,7 +144,7 @@ error_state CrashAvoidance::processSharedMemory()
         Monitor::Exit(SM_VC_->lockObject);
     }
 
-    assess();
+    //assess();
 
     // tell VC
     Monitor::Enter(SM_VC_->lockObject);
