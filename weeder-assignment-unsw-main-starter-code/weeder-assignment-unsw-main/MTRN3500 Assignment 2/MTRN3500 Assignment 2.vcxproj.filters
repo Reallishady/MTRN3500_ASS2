@@ -48,6 +48,9 @@
     <ClInclude Include="CrashAvoidance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GRU01.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -73,6 +76,9 @@
     </ClCompile>
     <ClCompile Include="Display.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GRU01.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
