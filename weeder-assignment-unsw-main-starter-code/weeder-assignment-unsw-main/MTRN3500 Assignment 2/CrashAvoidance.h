@@ -21,4 +21,14 @@ private:
     SM_VehicleControl^ SM_VC_;
 
     Stopwatch^ watch_;
+    array<double>^ laserX_;
+    array<double>^ laserY_;
+    double speed_;
+    double steering_;
+    double maxSpeed_;
+    bool steerLimited_;
+    double steerOut_;
+    int state_;
+    Stopwatch^ watch_;
+    void assess();
 };
