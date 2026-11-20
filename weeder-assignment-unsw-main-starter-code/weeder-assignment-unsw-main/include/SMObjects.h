@@ -30,6 +30,10 @@ static const char* STUDENT_ID = "5492432";
 const  double MAX_SPEED = 1.0;
 const double MAX_STEER = 40.0;
 
+double maxForwardSpeed;
+bool steerLimited;
+double steerLimit;
+
 
 constexpr uint8_t bit_ALL =             0b01111111;
 constexpr uint8_t bit_TM =              0b00000001;
