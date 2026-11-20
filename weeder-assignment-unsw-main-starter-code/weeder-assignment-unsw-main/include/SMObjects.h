@@ -107,3 +107,17 @@ public:
 
     }
 };
+ref class SM_GRU01
+{
+public:
+    Object^ lockObject;
+    double Latitude;
+    double Longitude;
+    double Altitude;
+    bool ValidFix;
+
+    SM_GRU01() {
+        lockObject = gcnew Object();
+        ValidFix = false;
+    }
+};
