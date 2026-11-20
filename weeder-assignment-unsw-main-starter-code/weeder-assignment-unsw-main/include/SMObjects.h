@@ -41,6 +41,7 @@ constexpr uint8_t bit_VC =              0b00001000;
 constexpr uint8_t bit_CONTROLLER =      0b00010000;
 constexpr uint8_t bit_DISPLAY =         0b00100000;
 constexpr uint8_t bit_CRASHAVOIDANCE =  0b01000000;
+constexpr uint8_t bit_GRU01 = 0b10000000;
 
 ref class SM_ThreadManagement
 {

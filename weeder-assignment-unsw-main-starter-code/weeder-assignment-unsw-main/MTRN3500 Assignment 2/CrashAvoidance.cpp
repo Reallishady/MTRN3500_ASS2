@@ -6,7 +6,7 @@ using namespace System::Diagnostics;
 
 // all distances in mm. LiDAR frame is x forward, y to the left
 const double HALF_WIDTH     = 450.0;  
-const double SIDE_WIDTH     = 500.0;   
+const double SIDE_WIDTH     = 400.0;   
 const double SLOW_DIST      = 1000.0;  
 const double STOP_DIST      = 600.0;   
 const double MIN_RANGE      = 50.0;    
@@ -73,8 +73,8 @@ void CrashAvoidance::assess()
     {
         double x = laserX_[i];
         double y = laserY_[i];
-       // double x = 1000;
-       // double y = 1000;
+       /* double x = 1000;
+        double y = 1000;*/
 
         // skip bad readings and anything level with or behind the LiDAR
         if (x <= 0 || Math::Sqrt(x * x + y * y) < MIN_RANGE)

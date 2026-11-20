@@ -5,6 +5,7 @@
 #include "Lidar.h"
 #include "GNSS.h"
 #include "Display.h"
+#include "GRU01.h"
 #include "VC.h"
 #include "CrashAvoidance.h"
 #using <System.dll>
@@ -55,6 +56,7 @@ private:
     SM_LiDAR^ TMT_SM_LiDAR_;
     SM_GNSS^ TMT_SM_GNSS_;
     SM_VehicleControl^ TMT_SM_VC_;
+    SM_GRU01^ TMT_SM_GRUO1_;
 
     array<Stopwatch^>^ TMT_StopwatchList;
     array<Thread^>^ ThreadList;

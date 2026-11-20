@@ -6,6 +6,7 @@ error_state ThreadManagement::setupSharedMemory() {
 	TMT_SM_LiDAR_ = gcnew SM_LiDAR;
 	TMT_SM_GNSS_ = gcnew SM_GNSS;
 	TMT_SM_VC_ = gcnew SM_VehicleControl;
+	TMT_SM_GRUO1_ = gcnew SM_GRU01;
 
 	return error_state::SUCCESS;
 }
@@ -73,7 +74,7 @@ void ThreadManagement::threadFunction() {
 		gcnew ThreadProperties(gcnew ThreadStart(gcnew Controller(TMT_SM_TM_, TMT_SM_VC_), &Controller::threadFunction), true, bit_CONTROLLER, "Controller Thread"),
 		gcnew ThreadProperties(gcnew ThreadStart(gcnew VehicleControl(TMT_SM_TM_, TMT_SM_VC_), &VehicleControl::threadFunction),true, bit_VC,"VC thread"),
 		gcnew ThreadProperties(gcnew ThreadStart(gcnew CrashAvoidance(TMT_SM_TM_, TMT_SM_LiDAR_, TMT_SM_VC_), &CrashAvoidance::threadFunction), true, bit_CRASHAVOIDANCE, "CrashAvoidance Thread"),
-		gcnew ThreadProperties(gcnew ThreadStart(gcnew GRU01(TMT_SM_TM_, TMT_SM_GRU01_), &GRU01::threadFunction), false, bit_GRU01, "GR-U01 Thread"),
+		gcnew ThreadProperties(gcnew ThreadStart(gcnew GRU01(TMT_SM_TM_, TMT_SM_GRUO1_), &GRU01::threadFunction), false, bit_GRU01, "GR-U01 Thread"),
 	};
 
 	//make a list of thread
