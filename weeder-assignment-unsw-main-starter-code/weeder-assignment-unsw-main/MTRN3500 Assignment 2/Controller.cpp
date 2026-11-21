@@ -1,10 +1,11 @@
 #include "Controller.h"
 
+#define INPUT_TYPE 1 
 Controller::Controller(SM_ThreadManagement^ SM_TM, SM_VehicleControl^ SM_VC)
 {
     SM_TM_ = SM_TM;
     SM_VC_ = SM_VC;
-    controller_ = new ControllerInterface(1,0);
+    controller_ = new ControllerInterface(1,INPUT_TYPE);
     Controller_Stopwatch = gcnew Stopwatch;
     speed = 0;
     steering = 0;
@@ -72,15 +73,24 @@ void Controller::threadFunction()
             
             controllerState state = controller_->GetState();
             controller_->printControllerState(state);
+            if( INPUT_TYPE == 0) {
+                speed = (state.rightTrigger - state.leftTrigger) * MAX_SPEED;
+            }
+            else {
+                speed = state.rightThumbY * MAX_SPEED;
+            }
           
-            speed = (state.rightTrigger - state.leftTrigger) * MAX_SPEED;
+            
             steering = -(state.rightThumbX * MAX_STEER);
 
-            if (state.buttonA)
-            {
-                Console::WriteLine("Controller: A pressed - shutting down all threads");
-                SM_TM_->shutdown = 0xFF;
+            if (INPUT_TYPE == 0) {
+                if (state.buttonA)
+                {
+                    Console::WriteLine("Controller: A pressed - shutting down all threads");
+                    SM_TM_->shutdown = 0xFF;
+                }
             }
+            
 
             if (!wasConnected)
             {
