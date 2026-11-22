@@ -113,7 +113,7 @@ error_state LiDAR::connect(String^ hostName, int portNumber)
 		Client->NoDelay = true;
 		Client->ReceiveTimeout = 5000;
 		Client->SendTimeout = 500;
-		Client->ReceiveBufferSize = 8192; // set consts for these
+		Client->ReceiveBufferSize = 8192; 
 		Client->SendBufferSize = 1024;
 
 		Stream = Client->GetStream();

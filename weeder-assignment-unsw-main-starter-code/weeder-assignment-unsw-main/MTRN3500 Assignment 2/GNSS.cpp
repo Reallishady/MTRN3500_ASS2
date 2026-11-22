@@ -50,9 +50,7 @@ void GNSS::threadFunction()
 			processSharedMemory();
 		}
 		
-		Thread::Sleep(20);
-
-		//if (i++ > 50) break;
+		
 	}
 
 	Console::WriteLine("GNSS Thread is terminated");
@@ -95,17 +93,14 @@ error_state GNSS::communicate()
 				return error_state::ERR_NO_DATA;
 			}
 
-			if (!Stream->DataAvailable) {
-				Thread::Sleep(5);
-				continue;
-			}
+			
 
 			int b = Stream->ReadByte();
 			if (b < 0) {
 				return error_state::ERR_CONNECTION;
 			}
 
-			header = (header << 8) | (unsigned int)b;
+			header = (header << 8) | b;
 		}
 
 		
