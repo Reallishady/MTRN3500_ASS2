@@ -225,6 +225,9 @@ error_state LiDAR::checkData()
 	Fragments = Response->Split(gcnew array<wchar_t>{ ' ', '\t', '\r', '\n' },
 		StringSplitOptions::RemoveEmptyEntries);
 
+	if (Fragments->Length < 2 || Fragments[0] != "sRA" || Fragments[1] != "LMDscandata")
+		return error_state::ERR_INVALID_DATA;
+
 
 	DistIndex = -1;
 	for (int i = 0; i < Fragments->Length; i++)
